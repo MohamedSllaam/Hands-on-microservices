@@ -29,11 +29,11 @@
 		</PackageReference>
 	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <Folder Include="Services\Product\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\Product\" />
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>

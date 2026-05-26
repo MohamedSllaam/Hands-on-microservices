@@ -42,14 +42,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <ProjectReference Include="..\..\BuildingBlocks\Shared\Shared.csproj" />
-    <ProjectReference Include="..\Application\Application.csproj" />
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-   </ItemGroup>
+	  <Folder Include="Services\" />
+	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Services\" />
+	  <ProjectReference Include="..\..\..\BuildingBlocks\Shared\Shared.csproj" />
+	  <ProjectReference Include="..\Application\Application.csproj" />
+	  <ProjectReference Include="..\Domain\Domain.csproj" />
+	  <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 
 </Project>
