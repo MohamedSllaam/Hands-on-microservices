@@ -4,7 +4,7 @@ using Infrastructure.Persistence.Repositories;
  using Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-
+using BuildingBlocks.Messaging.MassTransit;
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(
