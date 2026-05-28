@@ -4,15 +4,16 @@ using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-public class InventoryDbContext : DbContext
+public class OrderingDbContext : DbContext
 {
-    public InventoryDbContext(DbContextOptions<InventoryDbContext> options)
+    public OrderingDbContext(DbContextOptions<OrderingDbContext> options)
         : base(options)
     {
     }
 
-    public DbSet<InventoryItem> InventoryItems { get; set; }
-    public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderItem> OrderItems { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // IMPORTANT: Call base first to configure Identity tables

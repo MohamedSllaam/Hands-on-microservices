@@ -1,9 +1,11 @@
 ﻿namespace Infrastructure;
 using Domain.Interfaces;
+using Domain.Repositories;
+using Infrastructure.Interceptors;
 using Infrastructure.Persistence.Repositories;
  using Infrastructure.Settings;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 
 public static class DependencyInjection
 {
@@ -12,7 +14,7 @@ public static class DependencyInjection
         IConfiguration configuration)
 
     {
-
+ 
         // Register JwtSettings with IOptions pattern
         services.Configure<JwtSettings>(
              configuration.GetSection("JwtSettings"));
@@ -26,21 +28,27 @@ public static class DependencyInjection
         services.AddSingleton(resolver =>
             resolver.GetRequiredService<IOptions<JwtSettings>>().Value);
 
- 
- 
+
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+
         // Database
-        services.AddDbContext<InventoryDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        services.AddDbContext<OrderingDbContext>(options =>
+            options.UseSqlServer(connectionString));
 
         // Repositories
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+        services.AddScoped<IOrderRepository, OrderRepository>();
 
-        services.AddMessageBroker(
-    configuration,
-    Assembly.GetExecutingAssembly() // Or specifically: typeof(OrderCreatedConsumer).Assembly
-);
+        services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+
+        services.AddDbContext<OrderingDbContext>((sp, options) =>
+        {
+            options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
+            options.UseSqlServer(connectionString);
+        });
 
 
 
