@@ -2,6 +2,7 @@
 using Domain.Common.Specifications;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 
 namespace Infrastructure.Persistence.Repositories;
 

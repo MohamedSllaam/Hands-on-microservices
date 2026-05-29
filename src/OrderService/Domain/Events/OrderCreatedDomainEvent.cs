@@ -6,7 +6,15 @@ using Domain.Entities;
 using Shared.Entities;
 
 
-    public record OrderCreatedDomainEvent(Order Order) : IDomainEvent
+ 
+public record OrderCreatedDomainEvent : IDomainEvent
+{
+    public OrderCreatedDomainEvent(Order order)
     {
-        public DateTime OccurredOn => DateTime.UtcNow;
+        Order = order;
+        OccurredOn = DateTime.UtcNow;
     }
+
+    public Order Order { get; }
+    public DateTime OccurredOn { get; }
+}

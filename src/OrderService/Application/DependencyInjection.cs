@@ -1,7 +1,5 @@
 ﻿namespace Application;
- 
 using Application.Mappings;
-using AutoMapper;
 using BuildingBlocks.Messaging.MassTransit;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
@@ -23,14 +21,14 @@ public static class DependencyInjection
 
 
         services.AddValidatorsFromAssembly(
-    Assembly.GetExecutingAssembly());
+        Assembly.GetExecutingAssembly());
         services.AddMediatR(config =>
         {
 
             config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
             config.AddOpenBehavior(typeof(ValidationBehavior<,>));
             config.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        });
+         });
 
         services.AddFeatureManagement();
         services.AddMessageBroker(configuration, Assembly.GetExecutingAssembly());

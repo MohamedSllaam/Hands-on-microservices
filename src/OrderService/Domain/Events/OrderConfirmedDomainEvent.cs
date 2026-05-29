@@ -5,7 +5,14 @@ using Shared.Entities;
 namespace Domain.Events;
 
 
-    public record OrderConfirmedDomainEvent(Order Order) : IDomainEvent
+public record OrderConfirmedDomainEvent : IDomainEvent
+{
+    public OrderConfirmedDomainEvent(Order order)
     {
-        public DateTime OccurredOn => DateTime.UtcNow;
+        Order = order;
+        OccurredOn = DateTime.UtcNow;
     }
+
+    public Order Order { get; }
+    public DateTime OccurredOn { get; }
+}

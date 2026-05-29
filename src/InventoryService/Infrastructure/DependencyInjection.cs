@@ -1,10 +1,12 @@
 ﻿namespace Infrastructure;
+using BuildingBlocks.Messaging.MassTransit;
 using Domain.Interfaces;
+using Domain.Interfaces.Repositories;
 using Infrastructure.Persistence.Repositories;
  using Infrastructure.Settings;
 using Microsoft.Extensions.Options;
 using System.Reflection;
-using BuildingBlocks.Messaging.MassTransit;
+
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureServices(
@@ -42,6 +44,8 @@ public static class DependencyInjection
     Assembly.GetExecutingAssembly() // Or specifically: typeof(OrderCreatedConsumer).Assembly
 );
 
+
+        services.AddScoped<IInventoryRepository, InventoryRepository>();
 
 
         return services;
