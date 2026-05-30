@@ -46,6 +46,7 @@ public static class DependencyInjection
 
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();
+        services.AddScoped<IOutboxMessageConsumerRepository, OutboxMessageConsumerRepository>();
 
 
         return services;

@@ -1,9 +1,12 @@
 ﻿namespace Infrastructure;
 using Domain.Interfaces;
 using Domain.Repositories;
+using Hangfire;
+using Hangfire.SqlServer;
 using Infrastructure.Interceptors;
 using Infrastructure.Persistence.Repositories;
- using Infrastructure.Settings;
+using Infrastructure.Services;
+using Infrastructure.Settings;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Options;
 
@@ -34,6 +37,28 @@ public static class DependencyInjection
         // Database
         services.AddDbContext<OrderingDbContext>(options =>
             options.UseSqlServer(connectionString));
+
+
+        services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+
+        services.AddHangfireServer(options =>
+        {
+            options.WorkerCount = Environment.ProcessorCount; // Number of concurrent workers
+            options.Queues = new[] { "default", "outbox" };
+        });
+
+        services.AddHostedService<HangfireOutboxScheduler>();
 
         // Repositories
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

@@ -1,6 +1,8 @@
 using API;
 using API.Extentions;
 using Application;
+using Hangfire;
+using Hangfire.Dashboard;
 using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,11 @@ if (app.Environment.IsDevelopment())
 {
     await app.InitialiseDatabaseAsync();
     app.MapOpenApi();
+
+    app.UseHangfireDashboard("/hangfire", new DashboardOptions
+    {
+        Authorization = new[] { new HangfireAuthorizationFilter() }
+    });
 }
 
 app.UseHttpsRedirection();
@@ -34,3 +41,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+// Simple authorization for Hangfire dashboard
+public class HangfireAuthorizationFilter : IDashboardAuthorizationFilter
+{
+    public bool Authorize(DashboardContext context)
+    {
+        // Allow all in development
+        return true;
+    }
+}

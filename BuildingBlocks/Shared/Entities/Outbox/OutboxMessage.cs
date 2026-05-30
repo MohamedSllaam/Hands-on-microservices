@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BuildingBlocks.Messaging.Outbox;
+namespace Shared.Entities.Outbox;
 
 public class OutboxMessage
 {

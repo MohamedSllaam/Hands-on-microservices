@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Interceptors;
+﻿using Shared.Entities.Outbox;
+
+namespace Infrastructure.Interceptors;
 
 
 public class AddOutboxMessagesInterceptor(IMediator mediator)

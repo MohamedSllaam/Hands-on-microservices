@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 namespace Infrastructure;
-using BuildingBlocks.Messaging.Outbox;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities.Outbox;
 using System.Reflection;
 
 public class OrderingDbContext : DbContext

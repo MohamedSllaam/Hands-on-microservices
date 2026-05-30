@@ -10,8 +10,10 @@
 	<ItemGroup>
 
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
-
-
+ 
+		<PackageReference Include="Hangfire.AspNetCore" Version="1.8.20" />
+		<PackageReference Include="Hangfire.SqlServer" Version="1.8.20" />
+		<PackageReference Include="Hangfire.Dashboard.Basic.Authentication" Version="8.0.0" />
 		<!-- JWT Authentication -->
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />

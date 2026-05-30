@@ -1,28 +1,40 @@
 ﻿namespace Application.Features.EventHandlers;
 
-using Application.Features.ReserveStock.Commands;
-using BuildingBlocks.Messaging.Events;
-using MassTransit;
-using MediatR;
-using Microsoft.Extensions.Logging;
-
-
 public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>
 {
     private readonly IMediator _mediator;
     private readonly ILogger<OrderCreatedConsumer> _logger;
+    private readonly IOutboxMessageConsumerRepository _outboxMessageConsumerRepository;
 
-    public OrderCreatedConsumer(IMediator mediator, ILogger<OrderCreatedConsumer> logger)
+    public OrderCreatedConsumer(
+        IMediator mediator,
+        ILogger<OrderCreatedConsumer> logger,
+        IOutboxMessageConsumerRepository outboxMessageConsumerRepository)
     {
         _mediator = mediator;
         _logger = logger;
+        _outboxMessageConsumerRepository = outboxMessageConsumerRepository;
     }
 
     public async Task Consume(ConsumeContext<OrderCreatedEvent> context)
     {
-        _logger.LogInformation("Received OrderCreatedEvent for Order {OrderId} with {ItemCount} items",
+        var messageId = context.Message.EventId;
+        var consumerType = GetType().FullName!;
+
+        // 1. Check if already processed (idempotency)
+        var alreadyProcessed = await _outboxMessageConsumerRepository
+            .IsMessageProcessedAsync(messageId, consumerType);
+
+        if (alreadyProcessed)
+        {
+            _logger.LogWarning("Message {MessageId} already processed. Skipping.", messageId);
+            return;
+        }
+
+        _logger.LogInformation("Processing Order {OrderId} with {ItemCount} items",
             context.Message.OrderId, context.Message.Items.Count);
 
+        // 2. Process the message
         foreach (var item in context.Message.Items)
         {
             var command = new ReserveStockCommand
@@ -37,6 +49,9 @@ public class OrderCreatedConsumer : IConsumer<OrderCreatedEvent>
             await _mediator.Send(command);
         }
 
-        _logger.LogInformation("Successfully processed inventory reservation for Order {OrderId}", context.Message.OrderId);
+        // 3. Mark as processed (only if successful)
+        await _outboxMessageConsumerRepository.AddProcessedMessageAsync(messageId, consumerType);
+
+        _logger.LogInformation("Order {OrderId} processed successfully", context.Message.OrderId);
     }
 }
