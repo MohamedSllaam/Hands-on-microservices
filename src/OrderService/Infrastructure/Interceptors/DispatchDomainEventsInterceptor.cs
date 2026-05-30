@@ -1,4 +1,4 @@
-﻿using MassTransit.Mediator;
+﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Shared.Entities;
 

@@ -39,10 +39,10 @@ public static class DependencyInjection
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
-        services.AddMessageBroker(
-    configuration,
-    Assembly.GetExecutingAssembly() // Or specifically: typeof(OrderCreatedConsumer).Assembly
-);
+//        services.AddMessageBroker(
+//    configuration,
+//    Assembly.GetExecutingAssembly() // Or specifically: typeof(OrderCreatedConsumer).Assembly
+//);
 
 
         services.AddScoped<IInventoryRepository, InventoryRepository>();

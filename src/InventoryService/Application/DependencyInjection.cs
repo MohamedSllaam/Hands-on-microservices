@@ -1,5 +1,5 @@
 ﻿namespace Application;
- 
+using BuildingBlocks.Messaging.MassTransit;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,7 +17,8 @@ using AutoMapper;
         //services.AddValidatorsFromAssembly(
         //typeof(RegisterCommandValidator).Assembly);
 
-    //  services.AddAutoMapper(typeof(ProductMappingProfile));
+        //  services.AddAutoMapper(typeof(ProductMappingProfile));
+        services.AddMessageBroker(configuration, Assembly.GetExecutingAssembly());
 
 
         services.AddValidatorsFromAssembly(

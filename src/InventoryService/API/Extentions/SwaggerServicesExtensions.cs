@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
         {
             services.AddSwaggerGen(c => {
 
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyApp API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Inventory API", Version = "v1" });
                 var securitySchema = new OpenApiSecurityScheme
                 {
                     Description = "JWT Auth Bearer Scheme",
@@ -35,7 +35,7 @@ using Microsoft.OpenApi.Models;
         {
             host.UseSwagger();
             host.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyApp API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Inventory API v1");
             });
 
 

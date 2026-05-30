@@ -12,14 +12,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["src/InventoryService/API/API.csproj", "src/InventoryService/API/"]
+COPY ["src/OrderService/API/API.csproj", "src/OrderService/API/"]
 COPY ["BuildingBlocks/Shared/Shared.csproj", "BuildingBlocks/Shared/"]
-COPY ["src/InventoryService/Application/Application.csproj", "src/InventoryService/Application/"]
-COPY ["src/InventoryService/Domain/Domain.csproj", "src/InventoryService/Domain/"]
-COPY ["src/InventoryService/Infrastructure/Infrastructure.csproj", "src/InventoryService/Infrastructure/"]
-RUN dotnet restore "./src/InventoryService/API/API.csproj"
+COPY ["src/OrderService/Application/Application.csproj", "src/OrderService/Application/"]
+COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
+COPY ["src/OrderService/Domain/Domain.csproj", "src/OrderService/Domain/"]
+COPY ["src/OrderService/Infrastructure/Infrastructure.csproj", "src/OrderService/Infrastructure/"]
+RUN dotnet restore "./src/OrderService/API/API.csproj"
 COPY . .
-WORKDIR "/src/src/InventoryService/API"
+WORKDIR "/src/src/OrderService/API"
 RUN dotnet build "./API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 # This stage is used to publish the service project to be copied to the final stage

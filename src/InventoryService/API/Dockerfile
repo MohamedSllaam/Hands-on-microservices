@@ -15,6 +15,7 @@ WORKDIR /src
 COPY ["src/InventoryService/API/API.csproj", "src/InventoryService/API/"]
 COPY ["BuildingBlocks/Shared/Shared.csproj", "BuildingBlocks/Shared/"]
 COPY ["src/InventoryService/Application/Application.csproj", "src/InventoryService/Application/"]
+COPY ["BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj", "BuildingBlocks/BuildingBlocks.Messaging/"]
 COPY ["src/InventoryService/Domain/Domain.csproj", "src/InventoryService/Domain/"]
 COPY ["src/InventoryService/Infrastructure/Infrastructure.csproj", "src/InventoryService/Infrastructure/"]
 RUN dotnet restore "./src/InventoryService/API/API.csproj"
