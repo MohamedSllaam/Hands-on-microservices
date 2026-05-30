@@ -1,10 +1,16 @@
-﻿
-global using Domain.Common.Specifications;
+﻿global using Domain.Common.Specifications;
 global using Domain.Interfaces;
 global using Domain.Entities;
 global using Microsoft.EntityFrameworkCore;
 global using System.Linq.Expressions;
-global using Microsoft.Extensions.Logging;
-global using Microsoft.AspNetCore.Builder;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Configuration;
+global using BuildingBlocks.Messaging.Events;
+global using BuildingBlocks.Messaging.Outbox;
+global using Domain.Events;
+global using MediatR;
+global using Microsoft.EntityFrameworkCore.ChangeTracking;
+global using Microsoft.EntityFrameworkCore.Diagnostics;
+global using Shared.Entities;
+global using System.Threading;
+global using Newtonsoft.Json;

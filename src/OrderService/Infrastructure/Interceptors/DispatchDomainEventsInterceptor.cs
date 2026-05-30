@@ -1,9 +1,4 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Shared.Entities;
-
-
-namespace Infrastructure.Interceptors;
+﻿namespace Infrastructure.Interceptors;
 
 public class DispatchDomainEventsInterceptor(IMediator mediator)
     : SaveChangesInterceptor

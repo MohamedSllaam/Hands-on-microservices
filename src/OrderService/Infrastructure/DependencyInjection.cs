@@ -43,6 +43,7 @@ public static class DependencyInjection
 
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
+        services.AddScoped<ISaveChangesInterceptor, AddOutboxMessagesInterceptor>();
 
         services.AddDbContext<OrderingDbContext>((sp, options) =>
         {
