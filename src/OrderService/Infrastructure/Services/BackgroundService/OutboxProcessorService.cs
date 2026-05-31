@@ -1,35 +1,67 @@
-﻿using Hangfire;
+﻿namespace Infrastructure.Services.BackgroundService;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using MassTransit;
-namespace Infrastructure.Services;
-public class HangfireOutboxProcessor
+
+
+public class OutboxProcessorService : BackgroundService
 {
     private readonly IServiceProvider _serviceProvider;
-    private readonly ILogger<HangfireOutboxProcessor> _logger;
-    private readonly int _batchSize = 20;
-    private readonly int _maxRetryCount = 3;
+    private readonly ILogger<OutboxProcessorService> _logger;
+    private readonly OutboxSetting _settings;
 
-    public HangfireOutboxProcessor(
+    public OutboxProcessorService(
         IServiceProvider serviceProvider,
-        ILogger<HangfireOutboxProcessor> logger)
+        ILogger<OutboxProcessorService> logger,
+        IOptions<OutboxSetting> settings) // Inject settings
     {
         _serviceProvider = serviceProvider;
         _logger = logger;
+        _settings = settings.Value;
     }
 
-    [AutomaticRetry(Attempts = 0)] // We handle retries manually
-    [JobDisplayName("Process Outbox Messages - Batch {0}")]
-    public async Task ProcessOutboxMessagesAsync(CancellationToken cancellationToken = default)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("Outbox Processor Service is starting with settings: {@Settings}", new
+        {
+            _settings.BatchSize,
+            _settings.PollingIntervalSeconds,
+            _settings.MaxRetryCount
+        });
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                await ProcessOutboxMessagesAsync(stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while processing outbox messages");
+            }
+
+            await Task.Delay(TimeSpan.FromSeconds(_settings.PollingIntervalSeconds), stoppingToken);
+        }
+
+        _logger.LogInformation("Outbox Processor Service is stopping");
+    }
+
+    private async Task ProcessOutboxMessagesAsync(CancellationToken cancellationToken)
     {
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<OrderingDbContext>();
         var publishEndpoint = scope.ServiceProvider.GetRequiredService<IPublishEndpoint>();
 
-        // Get unprocessed messages
+        // Get unprocessed messages using settings
         var messages = await dbContext.OutboxMessages
-            .Where(m => !m.Processed && m.RetryCount <= _maxRetryCount)
+            .Where(m => !m.Processed && m.RetryCount <= _settings.MaxRetryCount)
             .OrderBy(m => m.OccurredOn)
-            .Take(_batchSize)
+            .Take(_settings.BatchSize)
             .ToListAsync(cancellationToken);
 
         if (!messages.Any())
@@ -71,7 +103,7 @@ public class HangfireOutboxProcessor
                 message.RetryCount++;
                 message.Error = ex.Message;
 
-                if (message.RetryCount >= _maxRetryCount)
+                if (message.RetryCount >= _settings.MaxRetryCount)
                 {
                     message.ProcessedOn = DateTime.UtcNow; // Mark as failed permanently
                     _logger.LogWarning("Outbox message {MessageId} failed after {RetryCount} retries",
@@ -80,16 +112,6 @@ public class HangfireOutboxProcessor
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);
-        }
-
-        // Schedule next batch if there are more messages
-        var remainingCount = await dbContext.OutboxMessages
-            .CountAsync(m => !m.Processed && m.RetryCount <= _maxRetryCount, cancellationToken);
-
-        if (remainingCount > 0)
-        {
-            BackgroundJob.Enqueue<HangfireOutboxProcessor>(x =>
-                x.ProcessOutboxMessagesAsync(CancellationToken.None));
         }
     }
 }
