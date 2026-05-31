@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-namespace Infrastructure;
-using Microsoft.AspNetCore.Identity;
+﻿namespace Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Shared.Entities.Outbox;
 using System.Reflection;

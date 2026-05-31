@@ -20,9 +20,8 @@
 		<!-- Logging -->
 		<PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
 
-		<!-- Identity & EF Core -->
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
+		<!--  EF Core -->
+ 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.0" />
 
 		<!-- EF Core Tools & SQL Server -->
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0">
@@ -34,12 +33,8 @@
 		<!-- Swagger/OpenAPI -->
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
 
-		<!-- JWT Authentication -->
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.0" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0" />
-
-		<!-- AutoMapper -->
-		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+	 
+		 
 	</ItemGroup>
 
 	<ItemGroup>
