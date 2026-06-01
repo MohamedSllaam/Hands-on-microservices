@@ -36,9 +36,9 @@ public static class DependencyInjection
 
         services.AddScoped<IOrderRepository, OrderRepository>();
 
+        services.AddScoped<ISaveChangesInterceptor, AddOutboxMessagesInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();
-        services.AddScoped<ISaveChangesInterceptor, AddOutboxMessagesInterceptor>();
 
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         services.AddDbContext<OrderingDbContext>((sp, options) =>

@@ -35,6 +35,7 @@ public class OrderingDbContext : DbContext
             entity.Property(e => e.Type).IsRequired().HasMaxLength(500);
             entity.Property(e => e.Content).IsRequired();
             entity.Property(e => e.OccurredOn).IsRequired();
+            entity.Property(e => e.Processed).IsRequired().HasDefaultValue(false);
             entity.HasIndex(e => e.ProcessedOn);
             entity.HasIndex(e => new { e.ProcessedOn, e.RetryCount });
         });

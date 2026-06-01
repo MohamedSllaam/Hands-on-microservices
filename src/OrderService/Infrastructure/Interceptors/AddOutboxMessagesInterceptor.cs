@@ -3,7 +3,7 @@
 namespace Infrastructure.Interceptors;
 
 
-public class AddOutboxMessagesInterceptor(IMediator mediator)
+public class AddOutboxMessagesInterceptor
     : SaveChangesInterceptor
 {
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -34,7 +34,7 @@ public class AddOutboxMessagesInterceptor(IMediator mediator)
             var domainEvents = entity.DomainEvents.ToList();
 
             foreach (var domainEvent in domainEvents)
-        {
+              {
                 // Convert OrderCreatedDomainEvent to OrderCreatedEvent
                 if (domainEvent is OrderCreatedDomainEvent orderCreatedEvent)
                 {
@@ -59,17 +59,21 @@ public class AddOutboxMessagesInterceptor(IMediator mediator)
                     outboxMessages.Add(new OutboxMessage
                     {
                         Id = Guid.NewGuid(),
-                        Type = integrationEvent.GetType().FullName!,
+                        Type = integrationEvent.EventType,
                         Content = JsonConvert.SerializeObject(integrationEvent),
                         OccurredOn = DateTime.UtcNow,
                         RetryCount = 0
                     });
-                }
-
+                  }
+              
                 // Add other domain event conversions here
+            }
+            if (outboxMessages.Count>0)
+            {
+                await context.AddRangeAsync(outboxMessages);
             }
         }
 
-         outboxMessages.AddRange(outboxMessages);
+   
     }
 }

@@ -75,6 +75,10 @@ public class OutboxProcessorService : BackgroundService
             {
                 // Deserialize the integration event
                 var eventType = Type.GetType(message.Type);
+  //                eventType = AppDomain.CurrentDomain
+  //.GetAssemblies()
+  //.SelectMany(a => a.GetTypes())
+  //.FirstOrDefault(t => t.FullName == message.Type);
                 if (eventType == null)
                 {
                     _logger.LogWarning("Could not resolve type: {Type}", message.Type);
@@ -84,6 +88,7 @@ public class OutboxProcessorService : BackgroundService
                     continue;
                 }
 
+              
                 var integrationEvent = JsonConvert.DeserializeObject(message.Content, eventType);
 
                 // Publish to RabbitMQ
@@ -92,7 +97,7 @@ public class OutboxProcessorService : BackgroundService
                 // Mark as processed
                 message.ProcessedOn = DateTime.UtcNow;
                 message.Error = null;
-
+                message.Processed = true;
                 _logger.LogInformation("Successfully published outbox message {MessageId} of type {Type}",
                     message.Id, message.Type);
             }

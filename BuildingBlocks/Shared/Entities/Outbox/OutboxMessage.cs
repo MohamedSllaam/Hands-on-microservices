@@ -15,5 +15,5 @@ public class OutboxMessage
     public DateTime? ProcessedOn { get; set; }
     public string? Error { get; set; }
     public int RetryCount { get; set; }
-    public bool Processed => ProcessedOn.HasValue;
+    public bool Processed { get; set; } = false;
 }
